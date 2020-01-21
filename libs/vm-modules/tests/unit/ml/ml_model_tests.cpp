@@ -1675,4 +1675,23 @@ TEST_F(VMModelTests, model_add_mixed_auto_inputs)
   ASSERT_TRUE(toolkit.Run(nullptr, ChargeAmount{0}));
 }
 
+TEST_F(VMModelTests, DISABLED_model_create_node)
+{
+  static char const *SRC = R"(
+      function main()
+       var a = Node();
+       model.addExperimental("input", data_shape);
+       var digit_input = Array<UInt64>(4);
+       var x = add("conv2d", 64, 3)(digit_input);
+       x = add("conv2d", 64, 3)(x);
+       x = add("maxpool", 2)(x);
+       var out = add("flatten")(x);
+       var vision_model = Model("functional",digit_input, out);
+      endfunction
+    )";
+
+  ASSERT_TRUE(toolkit.Compile(SRC));
+  ASSERT_TRUE(toolkit.Run(nullptr, ChargeAmount{0}));
+}
+
 }  // namespace
